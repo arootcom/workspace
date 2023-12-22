@@ -1,5 +1,7 @@
 import re
 
+from .properties import Properties
+
 #
 # Element
 #
@@ -55,6 +57,9 @@ class Element:
             if tag == istag:
                 return True
         return False
+
+    def getProperties(self):
+        return Properties(self.element['properties'])
 
 #
 # Elements

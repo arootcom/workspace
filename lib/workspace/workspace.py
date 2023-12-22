@@ -99,31 +99,6 @@ class Workspace:
         return Containers(containers)
 
 #
-# Properties
-#
-class Properties:
-    def __init__(self, properties):
-        self.properties = properties
-
-    def getValueByName(self, name):
-        return self.properties[name]
-
-    def getNames(self):
-        names = []
-        for name in self.properties:
-            names.append(name)
-        return names
-
-    def getList(self):
-        properties = []
-        for name in self.properties:
-            properties.append({
-                'name': name,
-                'value': self.properties[name],
-            })
-        return properties
-
-#
 # Deploymet Nodes
 #
 
@@ -147,9 +122,6 @@ class DeploymentNode(Element):
         elementDict = Element.getDict(self)
         elementDict['parentId'] = self.parentId
         return elementDict
-
-    def getProperties(self):
-        return Properties(self.element['properties'])
 
 #
 # Infrastructure Nodes
@@ -175,9 +147,6 @@ class InfrastructureNode(Element):
         elementDict = Element.getDict(self)
         elementDict['nodeId'] = self.nodeId
         return elementDict
-
-    def getProperties(self):
-        return Properties(self.element['properties'])
 
 #
 # Container Instances
@@ -216,9 +185,6 @@ class ContainerInstance(Element):
             'nodeId': self.nodeId,
         }
 
-    def getProperties(self):
-        return Properties(self.element['properties'])
-
 #
 # Containers
 #
@@ -246,7 +212,4 @@ class Container(Element):
         elementDict = Element.getDict(self)
         elementDict['softwareSystemId'] = self.softwareSystemId
         return elementDict
-
-    def getProperties(self):
-        return Properties(self.element['properties'])
 
