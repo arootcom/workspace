@@ -2,6 +2,7 @@ import re
 
 from .element import Element, Elements
 from .deployment.node import DeploymentNode, DeploymentNodes
+from .deployment.infrastructure import InfrastructureNode, InfrastructureNodes
 
 class Workspace:
 
@@ -98,31 +99,6 @@ class Workspace:
             if container.getSoftwareSystemId() == id:
                 containers.append(container)
         return Containers(containers)
-
-#
-# Infrastructure Nodes
-#
-
-class InfrastructureNodes(Elements):
-
-    def getElementsByTag(self, tag):
-        elements = Elements.getElementsByTag(self, tag)
-        return InfrastructureNodes(elements);
-
-#
-# Infrastructure Node
-#
-
-class InfrastructureNode(Element):
-
-    def __init__(self, infrastructureNode, nodeId):
-        Element.__init__(self, infrastructureNode)
-        self.nodeId = nodeId
-
-    def getDict(self):
-        elementDict = Element.getDict(self)
-        elementDict['nodeId'] = self.nodeId
-        return elementDict
 
 #
 # Container Instances
