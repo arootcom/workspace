@@ -4,6 +4,7 @@ from .element import Element, Elements
 from .deployment.node import DeploymentNode, DeploymentNodes
 from .deployment.infrastructure import InfrastructureNode, InfrastructureNodes
 from .deployment.container import ContainerInstance, ContainerInstances
+from .view import View
 
 class Workspace:
 
@@ -39,6 +40,10 @@ class Workspace:
                     container = Container(data, softwareSystem['id'])
                     self.containers[container.getId()] = container
 
+        self.views = {}
+        for view in self.workspace['views']['deploymentViews']:
+            self.views[view['key']] = View(view)
+
     # Container Instances
     def getContainerInstancesByEnviroment(self, environment):
         containerInstances = []
@@ -66,22 +71,13 @@ class Workspace:
     # Deployment Views
     def getDeploymentViews(self):
         views = []
-        for view in self.workspace['views']['deploymentViews']:
-            views.append({
-                'softwareSystemId': view['softwareSystemId'],
-                'environment': view['environment'],
-                'key': view['key'],
-            })
+        for view in self.views.values():
+            views.append(view)
         return views
 
+    # View
     def getDeploymentViewByKey(self, key):
-        for view in self.workspace['views']['deploymentViews']:
-            if key == view['key']:
-                return {
-                    'softwareSystemId': view['softwareSystemId'],
-                    'environment': view['environment'],
-                    'key': view['key'],
-                }
+        return self.views[key]
 
     # Software
     def getSoftwareSystemById(self, id):

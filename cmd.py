@@ -40,17 +40,17 @@ with open(file, 'r') as raw:
     if key:
         print("Key: ", key)
         view = ws.getDeploymentViewByKey(key)
-        print("DeploymentView: ", view)
+        print("DeploymentView: ", view.getDict())
 
-        system = ws.getSoftwareSystemById(view['softwareSystemId'])
+        system = ws.getSoftwareSystemById(view.getSoftwareSystemId())
         print("SoftwareSystem: ", system)
 
         reLs = re.compile(r"^(containers|deployment-nodes|container-instances|infrastructure-nodes)$")
         listElements = {
             'containers': ws.geContainersBySoftwareSystemId(system['id']),
-            'deployment-nodes': ws.getDeploymentNodesByEnvironment(view['environment']),
-            'container-instances': ws.getContainerInstancesByEnviroment(view['environment']),
-            'infrastructure-nodes': ws.getInfrastructureNodesByEnviroment(view['environment']),
+            'deployment-nodes': ws.getDeploymentNodesByEnvironment(view.getEnvironment()),
+            'container-instances': ws.getContainerInstancesByEnviroment(view.getEnvironment()),
+            'infrastructure-nodes': ws.getInfrastructureNodesByEnviroment(view.getEnvironment),
         }
 
         if ls and re.fullmatch(reLs, ls):
@@ -79,4 +79,4 @@ with open(file, 'r') as raw:
     else:
         print("DeploymentView:")
         for view in ws.getDeploymentViews():
-            print(view)
+            print(view.getDict())
