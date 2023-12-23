@@ -1,6 +1,7 @@
 import re
 
 from .element import Element, Elements
+from .deployment.node import DeploymentNode, DeploymentNodes
 
 class Workspace:
 
@@ -50,7 +51,7 @@ class Workspace:
         for node in self.nodes.values():
             if node.getEnvironment() == environment:
                 nodes.append(node)
-        return DelpoymentNodes(nodes)
+        return DeploymentNodes(nodes)
 
     # Infrastructure Nodes
     def getInfrastructureNodesByEnviroment(self, environment):
@@ -97,31 +98,6 @@ class Workspace:
             if container.getSoftwareSystemId() == id:
                 containers.append(container)
         return Containers(containers)
-
-#
-# Deploymet Nodes
-#
-
-class DelpoymentNodes(Elements):
-
-    def getElementsByTag(self, tag):
-        elements = Elements.getElementsByTag(self, tag)
-        return DelpoymentNodes(elements);
-
-#
-# Deploymet Node
-#
-
-class DeploymentNode(Element):
-
-    def __init__(self, node, parentId):
-        Element.__init__(self, node)
-        self.parentId = parentId
-
-    def getDict(self):
-        elementDict = Element.getDict(self)
-        elementDict['parentId'] = self.parentId
-        return elementDict
 
 #
 # Infrastructure Nodes
