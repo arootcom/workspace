@@ -50,7 +50,7 @@ with open(file, 'r') as raw:
             'containers': ws.geContainersBySoftwareSystemId(system['id']),
             'deployment-nodes': ws.getDeploymentNodesByEnvironment(view.getEnvironment()),
             'container-instances': ws.getContainerInstancesByEnviroment(view.getEnvironment()),
-            'infrastructure-nodes': ws.getInfrastructureNodesByEnviroment(view.getEnvironment),
+            'infrastructure-nodes': ws.getInfrastructureNodesByEnviroment(view.getEnvironment()),
         }
 
         if ls and re.fullmatch(reLs, ls):
