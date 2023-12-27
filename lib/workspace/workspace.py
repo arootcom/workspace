@@ -1,6 +1,8 @@
 import re
 
 from .element import Element, Elements
+from .system.software import Software
+from .system.container import Container, Containers
 from .deployment.node import DeploymentNode, DeploymentNodes
 from .deployment.infrastructure import InfrastructureNode, InfrastructureNodes
 from .deployment.container import ContainerInstance, ContainerInstances
@@ -33,8 +35,10 @@ class Workspace:
         self.infrastructureNodes = {}
         self.__initNodes__(self.workspace['model']['deploymentNodes'], None)
 
+        self.softwares = {}
         self.containers = {}
         for softwareSystem in self.workspace['model']['softwareSystems']:
+            self.softwares[softwareSystem['id']] = Software(softwareSystem)
             if 'containers' in softwareSystem.keys():
                 for data in softwareSystem['containers']:
                     container = Container(data, softwareSystem['id'])
@@ -81,13 +85,7 @@ class Workspace:
 
     # Software
     def getSoftwareSystemById(self, id):
-        for system in self.workspace['model']['softwareSystems']:
-            if id == system['id']:
-                return {
-                    'id': system['id'],
-                    'group': system['group'],
-                    'name': system['name'],
-                }
+        return self.softwares[id]
 
     # Software Containers
     def geContainersBySoftwareSystemId(self, id):
@@ -96,32 +94,4 @@ class Workspace:
             if container.getSoftwareSystemId() == id:
                 containers.append(container)
         return Containers(containers)
-
-#
-# Containers
-#
-
-class Containers(Elements):
-
-    def getElementsByTag(self, tag):
-        elements = Elements.getElementsByTag(self, tag)
-        return Containers(elements);
-
-#
-# Container
-#
-
-class Container(Element):
-
-    def __init__(self, container, softwareSystemId):
-        Element.__init__(self, container)
-        self.softwareSystemId = softwareSystemId
-
-    def getSoftwareSystemId(self):
-        return self.softwareSystemId
-
-    def getDict(self):
-        elementDict = Element.getDict(self)
-        elementDict['softwareSystemId'] = self.softwareSystemId
-        return elementDict
 

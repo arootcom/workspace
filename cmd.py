@@ -43,11 +43,11 @@ with open(file, 'r') as raw:
         print("DeploymentView: ", view.getDict())
 
         system = ws.getSoftwareSystemById(view.getSoftwareSystemId())
-        print("SoftwareSystem: ", system)
+        print("SoftwareSystem: ", system.getDict())
 
         reLs = re.compile(r"^(containers|deployment-nodes|container-instances|infrastructure-nodes)$")
         listElements = {
-            'containers': ws.geContainersBySoftwareSystemId(system['id']),
+            'containers': ws.geContainersBySoftwareSystemId(system.getId()),
             'deployment-nodes': ws.getDeploymentNodesByEnvironment(view.getEnvironment()),
             'container-instances': ws.getContainerInstancesByEnviroment(view.getEnvironment()),
             'infrastructure-nodes': ws.getInfrastructureNodesByEnviroment(view.getEnvironment()),

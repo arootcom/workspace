@@ -14,33 +14,9 @@ class Element:
     def getId(self):
         return self.element['id']
 
-    def getName(self):
-        if 'name' in self.element.keys():
-            return self.element['name']
-        return ""
-
-    def getEnvironment(self):
-        if 'environment' in self.element.keys():
-            return self.element['environment']
-        return ""
-
-    def getDescription(self):
-        if 'description' in self.element.keys():
-            return self.element['description']
-        return ""
-
-    def getTechnology(self):
-        if 'technology' in self.element.keys():
-            return self.element['technology']
-        return ""
-
     def getDict(self):
         return {
-            'id': self.getId(),
-            'name': self.getName(),
-            'environment': self.getEnvironment(),
-            'description': self.getDescription(),
-            'technology': self.getTechnology(),
+            'id': self.getId()
         }
 
     def getTags(self):
