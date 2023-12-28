@@ -56,4 +56,9 @@ class Software(Element) :
 # Software Systems
 #
 
+class Softwares(Elements):
+
+    def getElementsByTag(self, tag):
+        elements = Elements.getElementsByTag(self, tag)
+        return Softwares(elements);
 

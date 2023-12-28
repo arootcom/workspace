@@ -1,5 +1,4 @@
 import re
-
 from .properties import Properties
 
 #
@@ -28,10 +27,18 @@ class Element:
             tags.append(tag)
         return tags
 
+    def isTags(self):
+        return True
+
     def IsTag(self, istag):
         for tag in self.getTags():
             if tag == istag:
                 return True
+        return False
+
+    def isProperties(self):
+        if 'properties' in self.element.keys():
+            return True
         return False
 
     def getProperties(self):
@@ -45,6 +52,15 @@ class Elements:
 
     def __init__(self, elements):
         self.elements = elements
+        self.elementById = {}
+        for element in self.elements:
+            self.elementById[element.getId()] = element
+
+    def isGetElementById(self):
+        return True
+
+    def getElementById(self, elementId):
+        return self.elementById[elementId]
 
     def getElements(self):
         return self.elements
@@ -55,6 +71,9 @@ class Elements:
             if container.IsTag(tag):
                 elements.append(container)
         return elements
+
+    def isTags(self):
+        return True
 
     def getTagsCloud(self):
         tags = {}

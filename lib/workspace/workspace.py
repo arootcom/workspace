@@ -1,53 +1,74 @@
 import re
 
-from .element import Element, Elements
-from .system.software import Software
+from .system.software import Software, Softwares
 from .system.container import Container, Containers
 from .deployment.node import DeploymentNode, DeploymentNodes
 from .deployment.infrastructure import InfrastructureNode, InfrastructureNodes
 from .deployment.container import ContainerInstance, ContainerInstances
-from .view import View
+from .view import View, Views
 
 class Workspace:
 
-    def __initNodes__(self, deploymentNodes, parentId):
+    def __initNodes__(self, nodes, containerInstances, infrastructureNodes, deploymentNodes, parentId):
         for node in deploymentNodes:
-            self.nodes[node['id']] = DeploymentNode(node, parentId)
-
-            containerInstances = []
+            nodes.append(DeploymentNode(node, parentId))
             if 'containerInstances' in node.keys():
                 for containerInstance in node['containerInstances']:
-                    self.containerInstances[containerInstance['id']] = ContainerInstance(containerInstance, node['id'])
-
-            infrastructureNodes = []
+                    containerInstances.append(ContainerInstance(containerInstance, node['id']))
             if 'infrastructureNodes' in node.keys():
                 for infrastructureNode in node['infrastructureNodes']:
-                    self.infrastructureNodes[infrastructureNode['id']] = InfrastructureNode(infrastructureNode, node['id'])
-
+                    infrastructureNodes.append(InfrastructureNode(infrastructureNode, node['id']))
             if 'children' in node.keys():
-                self.__initNodes__(node['children'], node['id'])
+                self.__initNodes__(nodes, containerInstances, infrastructureNodes, node['children'], node['id'])
 
     def __init__(self, workspace):
         self.workspace = workspace
 
-        self.nodes = {}
-        self.containerInstances = {}
-        self.infrastructureNodes = {}
-        self.__initNodes__(self.workspace['model']['deploymentNodes'], None)
+        nodes = []
+        containerInstances = []
+        infrastructureNodes = []
+        self.__initNodes__(nodes, containerInstances, infrastructureNodes, self.workspace['model']['deploymentNodes'], None)
 
-        self.softwares = {}
-        self.containers = {}
+        softwares = []
+        containers = []
         for softwareSystem in self.workspace['model']['softwareSystems']:
-            self.softwares[softwareSystem['id']] = Software(softwareSystem)
+            softwares.append(Software(softwareSystem))
             if 'containers' in softwareSystem.keys():
                 for data in softwareSystem['containers']:
-                    container = Container(data, softwareSystem['id'])
-                    self.containers[container.getId()] = container
+                    containers.append(Container(data, softwareSystem['id']))
 
-        self.views = {}
-        for view in self.workspace['views']['deploymentViews']:
-            self.views[view['key']] = View(view)
+        deploymentViews = []
+        for deploymentView in self.workspace['views']['deploymentViews']:
+            deploymentViews.append(View(deploymentView))
 
+        self.items = {
+            'softwares': Softwares(softwares),
+            'containers': Containers(containers),
+            'deployment-views': Views(deploymentViews),
+            'deployment-nodes': DeploymentNodes(nodes),
+            'container-instances': ContainerInstances(containerInstances),
+            'infrastructure-nodes': InfrastructureNodes(infrastructureNodes),
+        }
+
+    def List(self, cmd):
+        if cmd in self.items.keys():
+            return self.items[cmd]
+
+    def ElementByKey(self, ls, key):
+        if self.items[ls].isGetElementById():
+            return self.items[ls].getElementById(key)
+        else:
+            return self.items[ls].getElementByKey(key)
+
+    def Keys(self):
+        return self.items.keys()
+
+    def isKeys(self, key):
+        if key in self.items.keys():
+            return True
+        return False
+
+'''
     # Container Instances
     def getContainerInstancesByEnviroment(self, environment):
         containerInstances = []
@@ -72,21 +93,6 @@ class Workspace:
                 infrastructureNodes.append(infrastructureNode)
         return InfrastructureNodes(infrastructureNodes)
 
-    # Deployment Views
-    def getDeploymentViews(self):
-        views = []
-        for view in self.views.values():
-            views.append(view)
-        return views
-
-    # View
-    def getDeploymentViewByKey(self, key):
-        return self.views[key]
-
-    # Software
-    def getSoftwareSystemById(self, id):
-        return self.softwares[id]
-
     # Software Containers
     def geContainersBySoftwareSystemId(self, id):
         containers = []
@@ -94,4 +100,4 @@ class Workspace:
             if container.getSoftwareSystemId() == id:
                 containers.append(container)
         return Containers(containers)
-
+'''
