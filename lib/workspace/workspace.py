@@ -5,7 +5,7 @@ from .system.container import Container, Containers
 from .deployment.node import DeploymentNode, DeploymentNodes
 from .deployment.infrastructure import InfrastructureNode, InfrastructureNodes
 from .deployment.container import ContainerInstance, ContainerInstances
-from .view import View, Views
+from .deployment.view import DeploymentView, DeploymentViews
 
 class Workspace:
 
@@ -39,12 +39,12 @@ class Workspace:
 
         deploymentViews = []
         for deploymentView in self.workspace['views']['deploymentViews']:
-            deploymentViews.append(View(deploymentView))
+            deploymentViews.append(DeploymentView(deploymentView))
 
         self.items = {
             'softwares': Softwares(softwares),
             'containers': Containers(containers),
-            'deployment-views': Views(deploymentViews),
+            'deployment-views': DeploymentViews(deploymentViews),
             'deployment-nodes': DeploymentNodes(nodes),
             'container-instances': ContainerInstances(containerInstances),
             'infrastructure-nodes': InfrastructureNodes(infrastructureNodes),

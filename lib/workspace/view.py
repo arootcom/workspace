@@ -12,12 +12,6 @@ class View:
     def getKey(self):
         return self.element['key']
 
-    def getSoftwareSystemId(self):
-        return self.element['softwareSystemId']
-
-    def getEnvironment(self):
-        return self.element['environment']
-
     def isProperties(self):
         if 'properties' in self.element.keys():
             return True
@@ -28,13 +22,6 @@ class View:
 
     def isTags(self):
         return False
-
-    def getDict(self):
-        return {
-            'softwareSystemId': self.element['softwareSystemId'],
-            'environment': self.element['environment'],
-            'key': self.getKey(),
-        }
 
 #
 # Views
@@ -58,5 +45,3 @@ class Views:
     def getElements(self):
         return self.elements
 
-    def isTags(self):
-        return False
