@@ -57,11 +57,13 @@ with open(file, 'r') as raw:
             print("path not found")
             exit(1)
 
-        if len(paths) == 2 and path[1]:
-            element = ws.ElementByKey(paths[0], paths[1])
+        elements = ws.List(paths[0])
+
+        if len(paths) > 1:
+            key = paths[1]
+            element = elements.getElementById(key) if elements.isGetElementById() else elements.getElementByKey(key)
             ShowElement(element)
         else:
-            elements = ws.List(paths[0])
             if withTagsCloud and not elements.isTags():
                 print("List with out tags cloud")
                 exit(1)

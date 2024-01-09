@@ -54,12 +54,6 @@ class Workspace:
         if cmd in self.items.keys():
             return self.items[cmd]
 
-    def ElementByKey(self, ls, key):
-        if self.items[ls].isGetElementById():
-            return self.items[ls].getElementById(key)
-        else:
-            return self.items[ls].getElementByKey(key)
-
     def Keys(self):
         return self.items.keys()
 
