@@ -65,3 +65,10 @@ class InfrastructureNodes(Elements):
         return InfrastructureNodes(elements);
 
 
+    def getElementsByEnvironment(self, environment):
+        elements = []
+        for container in self.getElements():
+            if container.getEnvironment() == environment:
+                elements.append(container)
+        return InfrastructureNodes(elements)
+

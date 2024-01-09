@@ -65,3 +65,11 @@ class Containers(Elements):
         elements = Elements.getElementsByTag(self, tag)
         return Containers(elements);
 
+    def getElementsBySoftwareSystemId(self, softwareSystemId):
+        elements = []
+        for container in self.getElements():
+            if container.getSoftwareSystemId() == softwareSystemId:
+                elements.append(container)
+        return Containers(elements)
+
+

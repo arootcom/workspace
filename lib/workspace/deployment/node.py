@@ -63,3 +63,10 @@ class DeploymentNodes(Elements):
     def getElementsByTag(self, tag):
         elements = Elements.getElementsByTag(self, tag)
         return DeploymentNodes(elements);
+
+    def getElementsByEnvironment(self, environment):
+        elements = []
+        for container in self.getElements():
+            if container.getEnvironment() == environment:
+                elements.append(container)
+        return DeploymentNodes(elements)

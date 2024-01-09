@@ -41,14 +41,14 @@ class ContainerInstance(Element):
 
 class ContainerInstances(Elements):
 
-    def getContainerInstancesByContainerId(self, containerId):
-        containers = []
-        for container in self.elements:
-            if container.getContainerId() == containerId:
-                containers.append(container)
-        return ContainerInstances(containers)
-
     def getElementsByTag(self, tag):
         elements = Elements.getElementsByTag(self, tag)
         return ContainerInstances(elements);
+
+    def getElementsByEnvironment(self, environment):
+        elements = []
+        for container in self.getElements():
+            if container.getEnvironment() == environment:
+                elements.append(container)
+        return ContainerInstances(elements)
 

@@ -62,36 +62,3 @@ class Workspace:
             return True
         return False
 
-'''
-    # Container Instances
-    def getContainerInstancesByEnviroment(self, environment):
-        containerInstances = []
-        for containerInstance in self.containerInstances.values():
-            if containerInstance.getEnvironment() == environment:
-                containerInstances.append(containerInstance)
-        return ContainerInstances(containerInstances)
-
-    # Deploymet Nodes
-    def getDeploymentNodesByEnvironment(self, environment):
-        nodes = []
-        for node in self.nodes.values():
-            if node.getEnvironment() == environment:
-                nodes.append(node)
-        return DeploymentNodes(nodes)
-
-    # Infrastructure Nodes
-    def getInfrastructureNodesByEnviroment(self, environment):
-        infrastructureNodes = []
-        for infrastructureNode in self.infrastructureNodes.values():
-            if infrastructureNode.getEnvironment() == environment:
-                infrastructureNodes.append(infrastructureNode)
-        return InfrastructureNodes(infrastructureNodes)
-
-    # Software Containers
-    def geContainersBySoftwareSystemId(self, id):
-        containers = []
-        for container in self.containers.values():
-            if container.getSoftwareSystemId() == id:
-                containers.append(container)
-        return Containers(containers)
-'''
