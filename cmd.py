@@ -18,7 +18,6 @@ parser.add_argument("--with-tags-cloud", help="tags cloud list", action='store_t
 parser.add_argument("--with-tags", action='store_true')
 parser.add_argument("--with-properties", action='store_true')
 parser.add_argument("--with-links", action='store_true')
-#parser.add_argument("--check", action='store_true')
 args = parser.parse_args()
 
 file = args.file
@@ -30,7 +29,6 @@ path = args.path
 tag = args.tag
 withTagsCloud = args.with_tags_cloud
 withTags = args.with_tags
-#is_check = args.check
 withProperties = args.with_properties
 withLinks = args.with_links
 
@@ -110,32 +108,3 @@ with open(file, 'r') as raw:
         for key in ws.Keys():
             print(key)
 
-'''
-    if key:
-        print("Key: ", key)
-        view = ws.getDeploymentViewByKey(key)
-        print("DeploymentView: ", view.getDict())
-
-        system = ws.getSoftwareSystemById(view.getSoftwareSystemId())
-        print("SoftwareSystem: ", system.getDict())
-
-        reLs = re.compile(r"^(containers|deployment-nodes|container-instances|infrastructure-nodes)$")
-        listElements = {
-            'containers': ws.geContainersBySoftwareSystemId(system.getId()),
-            'deployment-nodes': ws.getDeploymentNodesByEnvironment(view.getEnvironment()),
-            'container-instances': ws.getContainerInstancesByEnviroment(view.getEnvironment()),
-            'infrastructure-nodes': ws.getInfrastructureNodesByEnviroment(view.getEnvironment()),
-        }
-
-        if ls and re.fullmatch(reLs, ls):
-            elements = listElements[ls]
-            print(ls, ":")
-            for element in elements.getElements():
-                if ls == 'containers' and is_check:
-                    containerInstances = listElements['container-instances'].getContainerInstancesByContainerId(element.getId())
-                    if containerInstances.count() == 0:
-                        print("\t", element.getDict())
-                        print("\t\tcontainer instances count:", containerInstances.count())
-                    continue
-
-'''

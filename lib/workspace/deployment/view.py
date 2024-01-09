@@ -1,4 +1,5 @@
 from ..view import View, Views
+from ..system.container import Containers
 
 #
 # Deployment View
@@ -20,7 +21,12 @@ class DeploymentView(View):
         }
 
     def getLinks(self):
-        return ["software", "environment", "container-instances", "deployment-nodes", "infrastructure-nodes", "containers"]
+        return [
+            "software", "environment",
+            "container-instances", "deployment-nodes", "infrastructure-nodes",
+            "containers",
+            "containers-wo-instances",
+        ]
 
     def isLink(self, name):
         for link in self.getLinks():
@@ -45,6 +51,23 @@ class DeploymentView(View):
             return {
                 "type": "Elements",
                 "items": ws.List(link).getElementsBySoftwareSystemId(self.getSoftwareSystemId())
+            }
+        elif link == "containers-wo-instances":
+            items = []
+            containers = ws.List("containers").getElementsBySoftwareSystemId(self.getSoftwareSystemId())
+            instances = ws.List("container-instances").getElementsByEnvironment(self.getEnvironment())
+            for container in containers.getElements():
+                append = True
+                for instance in instances.getElements():
+                    if instance.getContainerId() == container.getId():
+                        append = False
+                        break
+                if append:
+                    items.append(container)
+
+            return {
+                "type": "Elements",
+                "items": Containers(items)
             }
         else:
             return {
