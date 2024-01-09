@@ -12,8 +12,7 @@ from workspace import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-file", help="file workspace.json", required=True)
-parser.add_argument("-list", help="list relations entity")
-parser.add_argument("-key", help="deployment view key")
+parser.add_argument("-path", help="path element(s) data")
 parser.add_argument("-tag", help="list by tag")
 parser.add_argument("--with-tags-cloud", help="tags cloud list", action='store_true')
 parser.add_argument("--with-tags", action='store_true')
@@ -26,8 +25,7 @@ if not os.path.isfile(file):
     print(file, " is not file")
     exit()
 
-key = args.key
-ls = args.list
+path = args.path
 tag = args.tag
 withTagsCloud = args.with_tags_cloud
 withTags = args.with_tags
@@ -52,16 +50,18 @@ def ShowElement(element):
 
 with open(file, 'r') as raw:
     ws = workspace.Workspace(json.load(raw))
-    if ls:
-        if not ws.isKeys(ls):
-            print("list not found")
+    if path:
+        print("path: /" + path)
+        paths = path.split("/")
+        if not ws.isKeys(paths[0]):
+            print("path not found")
             exit(1)
-        if key:
-            print("/" + ls + "/" + key)
-            element = ws.ElementByKey(ls, key)
+
+        if len(paths) == 2 and path[1]:
+            element = ws.ElementByKey(paths[0], paths[1])
             ShowElement(element)
         else:
-            elements = ws.List(ls)
+            elements = ws.List(paths[0])
             if withTagsCloud and not elements.isTags():
                 print("List with out tags cloud")
                 exit(1)
@@ -76,6 +76,7 @@ with open(file, 'r') as raw:
             for element in elements.getElements():
                 ShowElement(element)
     else:
+        print("path: /")
         for key in ws.Keys():
             print(key)
 
