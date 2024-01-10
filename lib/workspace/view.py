@@ -35,9 +35,6 @@ class Views:
         for element in self.elements:
             self.elementByKey[element.getKey()] = element
 
-    def isGetElementById(self):
-        return False
-
     def getElementByKey(self, key):
         return self.elementByKey[key]
 

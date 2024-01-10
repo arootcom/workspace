@@ -85,3 +85,13 @@ class DeploymentViews(Views):
     def isTags(self):
         return False
 
+    def isLink(self, name):
+        if name in self.elementByKey.keys():
+            return True
+        return False
+
+    def getLink(self, link, ws):
+        return {
+            'type': "Element",
+            'item': self.getElementByKey(link),
+        }

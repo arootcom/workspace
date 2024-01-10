@@ -70,3 +70,14 @@ class DeploymentNodes(Elements):
             if container.getEnvironment() == environment:
                 elements.append(container)
         return DeploymentNodes(elements)
+
+    def isLink(self, name):
+        if name in self.elementById.keys():
+            return True
+        return False
+
+    def getLink(self, link, ws):
+        return {
+            'type': "Element",
+            'item': self.getElementById(link),
+        }

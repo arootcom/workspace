@@ -56,9 +56,6 @@ class Elements:
         for element in self.elements:
             self.elementById[element.getId()] = element
 
-    def isGetElementById(self):
-        return True
-
     def getElementById(self, elementId):
         return self.elementById[elementId]
 
