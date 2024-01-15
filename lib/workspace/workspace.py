@@ -80,7 +80,9 @@ class Workspace:
 
     # A string identifying the agent that was last used to modify the workspace (e.g. "structurizr-java/1.2.0").
     def getLastModifiedAgent(self):
-        return self.workspace['lastModifiedAgent']
+        if 'lastModifiedAgent' in self.workspace.keys():
+            return self.workspace['lastModifiedAgent']
+        return ""
 
     #
     def getDict(self):

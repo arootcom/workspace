@@ -77,31 +77,15 @@ def ShowElements(elements):
 
 with open(file, 'r') as raw:
     ws = workspace.Workspace(json.load(raw))
-    print("Path: " + path)
+    ds = dispatcher.Dispatcher(ws)
+    req = dispatcher.Request(path)
+    print("Path: ", req.getPath())
 
-    if path:
-        element = ws
-        paths = path.split("/")
-        i = 0
-
-        for part in paths:
-            i = i + 1
-            if not element.isLink(part):
-                print("path not found")
-                exit(1)
-
-            data = element.getLink(part, ws)
-
-            if data["type"] == "Element":
-                if i == len(paths):
-                    ShowElement(data["item"])
-                else:
-                    element = data["item"]
-            elif data["type"] == "Elements":
-                if i == len(paths):
-                    ShowElements(data["items"])
-                else:
-                    element = data["items"]
-    else:
-        ShowElement(ws)
+    res = ds.dispatch(req)
+    if res.getType() == "Element":
+        ShowElement(res.getElement())
+    elif res.getType() == "Elements":
+        ShowElements(res.getElements())
+    elif res.getType() == "Error":
+        print(res.getNote())
 
