@@ -52,6 +52,22 @@ class Software(Element) :
 
         return elementDict
 
+    def getLinks(self):
+        return ["deployment-views"]
+
+    def isLink(self, name):
+        for link in self.getLinks():
+            if link == name:
+                return True
+        return False
+
+    def getLink(self, link, ws):
+        return {
+            "type": "Elements",
+            "items": ws.List(link).getElementsBySoftwareSystemId(self.getId())
+        }
+
+
 #
 # Software Systems
 #
@@ -61,4 +77,15 @@ class Softwares(Elements):
     def getElementsByTag(self, tag):
         elements = Elements.getElementsByTag(self, tag)
         return Softwares(elements);
+
+    def isLink(self, name):
+        if name in self.elementById.keys():
+            return True
+        return False
+
+    def getLink(self, link, ws):
+        return {
+            'type': "Element",
+            'item': self.getElementById(link),
+        }
 

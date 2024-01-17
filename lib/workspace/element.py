@@ -10,6 +10,13 @@ class Element:
     def __init__(self, element):
         self.element = element
 
+    def __getattr__(self, name):
+        for key in self.element.keys():
+            if key == name:
+                return self.element[name]
+        print(f'Attribute {name} not found')
+        raise AttributeError
+
     def getId(self):
         return self.element['id']
 

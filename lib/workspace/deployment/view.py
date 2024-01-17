@@ -95,3 +95,10 @@ class DeploymentViews(Views):
             'type': "Element",
             'item': self.getElementByKey(link),
         }
+
+    def getElementsBySoftwareSystemId(self, softwareSystemId):
+        elements = []
+        for container in self.getElements():
+            if container.getSoftwareSystemId() == softwareSystemId:
+                elements.append(container)
+        return DeploymentViews(elements)
