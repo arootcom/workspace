@@ -72,3 +72,9 @@ class InfrastructureNodes(Elements):
                 elements.append(container)
         return InfrastructureNodes(elements)
 
+    def getElementsByDeploymentNodeId(self, developmentNodeId):
+        elements = []
+        for container in self.getElements():
+            if container.nodeId == developmentNodeId:
+                elements.append(container)
+        return InfrastructureNodes(elements)

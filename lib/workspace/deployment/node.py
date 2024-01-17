@@ -54,6 +54,21 @@ class DeploymentNode(Element):
 
         return elementDict
 
+    def getLinks(self):
+        return ["infrastructure-nodes"]
+
+    def isLink(self, name):
+        for link in self.getLinks():
+            if link == name:
+                return True
+        return False
+
+    def getLink(self, link, ws):
+        return {
+            "type": "Elements",
+            "items": ws.List(link).getElementsByDeploymentNodeId(self.getId())
+        }
+
 #
 # Deploymet Nodes
 #
