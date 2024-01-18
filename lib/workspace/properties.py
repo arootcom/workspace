@@ -6,6 +6,11 @@ class Properties:
     def __init__(self, properties):
         self.properties = properties
 
+    def isName(self, name):
+        if name in self.properties.keys():
+            return True
+        return False
+
     def getValueByName(self, name):
         return self.properties[name]
 

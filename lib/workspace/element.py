@@ -69,11 +69,12 @@ class Elements:
     def getElements(self):
         return self.elements
 
-    def getElementsByTag(self, tag):
+    def getElementsByTag(self, *tags):
         elements = []
         for container in self.elements:
-            if container.IsTag(tag):
-                elements.append(container)
+            for tag in tags:
+                if container.IsTag(tag):
+                    elements.append(container)
         return elements
 
     def isTags(self):

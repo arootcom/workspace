@@ -75,8 +75,8 @@ class DeploymentNode(Element):
 
 class DeploymentNodes(Elements):
 
-    def getElementsByTag(self, tag):
-        elements = Elements.getElementsByTag(self, tag)
+    def getElementsByTag(self, *tags):
+        elements = Elements.getElementsByTag(self, *tags)
         return DeploymentNodes(elements);
 
     def getElementsByEnvironment(self, environment):
