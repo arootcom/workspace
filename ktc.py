@@ -79,6 +79,11 @@ with open(file, 'r') as raw:
                     description = virtualMachine.getDescription()
                     properties = virtualMachine.getProperties()
                     system = properties.getValueByName('System')
+                    ips = []
+                    if properties.isName('IP'):
+                        ips = properties.getValueByName('IP')
+                        ips = re.sub(r'\s+', '', ips)
+                        ips = ips.split(',')
                     ports = []
                     services = []
                     infrastructures = virtualMachine.getLink("infrastructure-nodes", ws)['items']
@@ -88,7 +93,7 @@ with open(file, 'r') as raw:
                             if report.search(name):
                                 ports.append(properties.getValueByName(name))
                         services.append(infra.name + " " + properties.getValueByName("version") if properties.isName("version") else infra.name)
-                    print(f'| {i:2d} | {description:40} | {host:40} | {" ":17} | {ports[0] if ports else "":30} | {services[0] if services else "":30} | {system:20} |')
+                    print(f'| {i:2d} | {description:40} | {host:40} | {ips[instance] if ips else "":17} | {ports[0] if ports else "":30} | {services[0] if services else "":30} | {system:20} |')
                     count = len(ports) if len(ports) > len(services) else len(services)
                     for num in range(1, count):
                         print(f'| {"":2} | {"":40} | {"":40} | {"":17} | {ports[num] if num < len(ports) else "":30} | {services[num] if num < len(services) else "":30} | {"":20} |')
