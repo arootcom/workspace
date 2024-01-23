@@ -12,6 +12,7 @@ from workspace import *
 parser = argparse.ArgumentParser()
 parser.add_argument("-file", help="file workspace.json", required=True)
 parser.add_argument("-path", help="path element(s) data", default="")
+parser.add_argument("-view", help="view diagram")
 args = parser.parse_args()
 
 file = args.file
@@ -20,6 +21,30 @@ if not os.path.isfile(file):
     exit()
 
 path = args.path
+view = args.view
+
+def ShowNode(node, parent):
+    properties = node.getProperties()
+    system = properties.getValueByName('System')
+    if node.parentId == parent.id:
+        infrastructures = node.getLink("infrastructure-nodes", ws)['items']
+        tab = "\t\t"
+        if int(node.instances) > 1:
+            tab = "\t\t\t"
+            print("\t\tpackage \"", node.description ,"\" {")
+        for instance in range(0, int(node.instances)):
+            host = node.name
+            host = re.sub(r'\d+..\d+$', f'{instance + 1:02d}', host)
+            print(tab +"node node" + node.id + "i" + str(instance), "[")
+            print(tab + "\t", host)
+            print(tab + "\t---")
+            print(tab + "\t", system)
+            for infra in infrastructures.getElements():
+                properties = infra.getProperties()
+                print(tab + "\t-", infra.name + " " + properties.getValueByName("version") if properties.isName("version") else infra.name)
+            print(tab + "]")
+        if int(node.instances) > 1:
+            print("\t\t}")
 
 with open(file, 'r') as raw:
     ws = workspace.Workspace(json.load(raw))
@@ -30,6 +55,26 @@ with open(file, 'r') as raw:
     if res.getType() == "Elements":
         for element in res.getElements().getElements():
             print(element.getDict())
+    elif view:
+        soft = res.getElement()
+        views = soft.getLink('deployment-views', ws)['items']
+        view = views.getLink(view, ws)['item']
+        nodes = view.getLink("deployment-nodes", ws)['items']
+        vms = nodes.getElementsByTag("Virtual Machine")
+
+        print("@startuml\n")
+        for center in nodes.getElementsByTag("Data Center").getElements():
+            print("node center" + center.id, "as \"", center.name ,"\" {")
+            print("\tnode soft as \"", view.getEnvironment(), "/", soft.description, "\" {")
+            for vm in vms.getElements():
+                ShowNode(vm, center)
+                for lxc in nodes.getElementsByTag("Linux Containers").getElements():
+                    for lc in nodes.getElementsByTag("Linux Container").getElements():
+                        #print(lc.parentId, vm.id)
+                        ShowNode(lc, lxc)
+            print("\t}")
+            print("}")
+        print("@enduml\n")
     else:
         soft = res.getElement()
         print("## Комплекс Технических Средств\n")
@@ -39,6 +84,9 @@ with open(file, 'r') as raw:
         views = soft.getLink('deployment-views', ws)['items']
         for view in views.getElements():
             print("###", view.getEnvironment(), "\n")
+
+            print("#### Структурная схема")
+            print("![deployment](./" + view.getKey() + ".png)")
 
             nodes = view.getLink("deployment-nodes", ws)['items']
             print("#### Вычислительные ресурсы\n")
