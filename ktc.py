@@ -23,6 +23,40 @@ if not os.path.isfile(file):
 path = args.path
 view = args.view
 
+links = {}
+report = re.compile("^(port\d+|port)$")
+
+def GetLinks(infra, info):
+    relationships = infra.getLink("relationships", ws)['items']
+    for relationship in relationships.getElements():
+        properties = relationship.getProperties()
+        if properties.isName("protocol"):
+            for name in properties.getNames():
+                if report.search(name):
+                    if relationship.getDestinationId() in info.keys():
+                        info[relationship.getDestinationId()][properties.getValueByName("protocol")][properties.getValueByName(name)] = ''
+                    else:
+                        info[relationship.getDestinationId()] = {properties.getValueByName("protocol"): {properties.getValueByName(name) : ''}}
+
+def ShowLinks():
+    print("\n")
+    for sourcename in links.keys():
+        for descinfra in links[sourcename]['links'].keys():
+            for descname in links.keys():
+                find = False
+                for infra in links[descname]['infrastructures']:
+                    if descinfra == infra:
+                        find = True
+                        break
+                if find:
+                    if sourcename != descname:
+                        protocols = []
+                        for protocol in links[sourcename]['links'][descinfra].keys():
+                            protocols.append(protocol + ': ' + ",".join(links[sourcename]['links'][descinfra][protocol].keys()))
+                        print(sourcename, "-->", descname, ":", "; ".join(protocols))
+                    break
+    print("\n")
+
 def ShowNode(node, parent):
     properties = node.getProperties()
     system = properties.getValueByName('System')
@@ -35,13 +69,17 @@ def ShowNode(node, parent):
         for instance in range(0, int(node.instances)):
             host = node.name
             host = re.sub(r'\d+..\d+$', f'{instance + 1:02d}', host)
-            print(tab +"node node" + node.id + "i" + str(instance), "[")
+            nodename = "node" + node.id + "i" + str(instance)
+            links[nodename] = {'infrastructures' : [], 'links' : {} }
+            print(tab +"node", nodename, "[")
             print(tab + "\t", host)
             print(tab + "\t---")
             print(tab + "\t", system)
             for infra in infrastructures.getElements():
                 properties = infra.getProperties()
                 print(tab + "\t-", infra.name + " " + properties.getValueByName("version") if properties.isName("version") else infra.name)
+                links[nodename]['infrastructures'].append(infra.getId())
+                GetLinks(infra, links[nodename]['links'])
             print(tab + "]")
         if int(node.instances) > 1:
             print("\t\t}")
@@ -74,6 +112,7 @@ with open(file, 'r') as raw:
                         ShowNode(lc, lxc)
             print("\t}")
             print("}")
+            ShowLinks()
         print("@enduml\n")
     else:
         soft = res.getElement()
@@ -117,7 +156,6 @@ with open(file, 'r') as raw:
             print(f'| {"№":2} | {"Наименование":40} | {"Хост":40} | {"IP":17} | {"Порты":30} | {"Сервисы":30} | {"OS":20} |')
             print('|----|------------------------------------------|------------------------------------------|-------------------|--------------------------------|--------------------------------|----------------------|')
             i = 0
-            report = re.compile("^(port\d+|port)$")
             virtualMachines = nodes.getElementsByTag("Virtual Machine", "Linux Container")
             for virtualMachine in virtualMachines.getElements():
                 for instance in range(0, int(virtualMachine.instances)):
