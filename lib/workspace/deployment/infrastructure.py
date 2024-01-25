@@ -67,8 +67,9 @@ class InfrastructureNode(Element):
     def getLink(self, link, ws):
         if link == "relationships":
             relationships = []
-            for relationship in self.element['relationships']:
-                relationships.append(Relationship(relationship, self.getId()))
+            if "relationships" in self.element.keys():
+                for relationship in self.element['relationships']:
+                    relationships.append(Relationship(relationship, self.getId()))
             return {
                 "type": "Elements",
                 "items": Relationships(relationships)
