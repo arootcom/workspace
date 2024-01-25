@@ -1,4 +1,5 @@
 from ..element import Element, Elements
+from ..relationship import Relationship, Relationships
 
 #
 # Infrastructure Node
@@ -54,6 +55,25 @@ class InfrastructureNode(Element):
 
         return elementDict
 
+    def getLinks(self):
+        return ["relationships"]
+
+    def isLink(self, name):
+        for link in self.getLinks():
+            if link == name:
+                return True
+        return False
+
+    def getLink(self, link, ws):
+        if link == "relationships":
+            relationships = []
+            for relationship in self.element['relationships']:
+                relationships.append(Relationship(relationship, self.getId()))
+            return {
+                "type": "Elements",
+                "items": Relationships(relationships)
+            }
+
 #
 # Infrastructure Nodes
 #
@@ -64,6 +84,16 @@ class InfrastructureNodes(Elements):
         elements = Elements.getElementsByTag(self, tag)
         return InfrastructureNodes(elements);
 
+    def isLink(self, name):
+        if name in self.elementById.keys():
+            return True
+        return False
+
+    def getLink(self, link, ws):
+        return {
+            'type': "Element",
+            'item': self.getElementById(link),
+        }
 
     def getElementsByEnvironment(self, environment):
         elements = []
