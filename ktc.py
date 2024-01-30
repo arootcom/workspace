@@ -106,10 +106,11 @@ with open(file, 'r') as raw:
             print("\tnode soft as \"", view.getEnvironment(), "/", soft.description, "\" {")
             for vm in vms.getElements():
                 ShowNode(vm, center)
-                for lxc in nodes.getElementsByTag("Linux Containers").getElements():
-                    for lc in nodes.getElementsByTag("Linux Container").getElements():
-                        #print(lc.parentId, vm.id)
-                        ShowNode(lc, lxc)
+                for lxc in nodes.getElementsByTag("Linux Containers", "Docker Containers").getElements():
+                    if vm.id == lxc.parentId:
+                        for lc in nodes.getElementsByTag("Linux Container", "Docker Container").getElements():
+                            if lc.parentId == lxc.id:
+                                ShowNode(lc, lxc)
             print("\t}")
             print("}")
             ShowLinks()
@@ -156,7 +157,7 @@ with open(file, 'r') as raw:
             print(f'| {"№":2} | {"Наименование":40} | {"Хост":40} | {"IP":17} | {"Порты":30} | {"Сервисы":30} | {"OS":20} |')
             print('|----|------------------------------------------|------------------------------------------|-------------------|--------------------------------|--------------------------------|----------------------|')
             i = 0
-            virtualMachines = nodes.getElementsByTag("Virtual Machine", "Linux Container")
+            virtualMachines = nodes.getElementsByTag("Virtual Machine", "Linux Container", "Docker Container")
             for virtualMachine in virtualMachines.getElements():
                 for instance in range(0, int(virtualMachine.instances)):
                     i = i + 1
@@ -182,7 +183,7 @@ with open(file, 'r') as raw:
                     print(f'| {i:2d} | {description:40} | {host:40} | {ips[instance] if ips else "":17} | {ports[0] if ports else "":30} | {services[0] if services else "":30} | {system:20} |')
                     count = len(ports) if len(ports) > len(services) else len(services)
                     for num in range(1, count):
-                        print(f'| {"":2} | {"":40} | {"":40} | {"":17} | {ports[num] if num < len(ports) else "":30} | {services[num] if num < len(services) else "":30} | {"":20} |')
+                        print(f'| {"":2} | {"":40} | {"":40} | {ips[num] if num < len(ips) else "":17} | {ports[num] if num < len(ports) else "":30} | {services[num] if num < len(services) else "":30} | {"":20} |')
             #print('|----|------------------------------------------|------------------------------------------|-------------------|--------------------------------|--------------------------------|----------------------|')
             print("\n")
 
